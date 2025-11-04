@@ -6,16 +6,17 @@ Interactive web demo for comparing audio beamforming methods and interference re
 
 ```
 LowkeyHighPass/
-├── index.html                          # Main demo webpage
-├── README.md                           
+├── male_target_audio.flac        #Only 1 male audio considered as target
+├── docs/                        # Webpage
+│   ├── index.html                    
 │
-├── mixed_audio/                        # Input: Mixed signals
+├── mixed_audio/                        # Input: Mixed signals [Target+Interference]
 │   ├── male_female_mixture.flac
 │   ├── male_male_mixture.flac
 │   ├── male_water_mixture.flac
 │   └── male_song_mixture.flac
 │
-├── output_audio/                       # Output: Processed signals
+├── output_audio/                       # Output: Processed signals of 3 methods
 │   ├── neural_female.flac
 │   ├── neural_male.flac
 │   ├── neural_water.flac
@@ -29,11 +30,12 @@ LowkeyHighPass/
 │   ├── nested_water.flac
 │   └── nested_song.flac
 │
-└── interference/                       # Source interference files
+└── Interference/                       # Source interference files
     ├── interference_female_speech.flac
     ├── interference_male.flac
     ├── interference_water.wav
     └── interference_song.flac
+
 ```
 
 ## 📊 Performance Metrics
