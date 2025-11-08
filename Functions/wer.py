@@ -1,11 +1,22 @@
+# !apt-get install -y ffmpeg
+# !pip install -q git+https://github.com/openai/whisper.git
+# !pip install -q soundfile librosa jiwer
+
 import whisper
 import soundfile as sf
 import librosa
 import numpy as np
 from jiwer import wer
+import re
+
+def normalize_text(text):
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
 
 def compute_wer_from_audio(ref_path, hyp_path):
-    model = whisper.load_model("small")   # fixed model size
+    model = whisper.load_model("small") 
 
     def load_and_preprocess(path):
         audio, sr = sf.read(path)
@@ -25,19 +36,23 @@ def compute_wer_from_audio(ref_path, hyp_path):
     print(f"🎧 Transcribing hypothesis: {hyp_path}")
     hyp_result = model.transcribe(hyp_audio, fp16=False)
 
-    ref_text = ref_result["text"].strip()
-    hyp_text = hyp_result["text"].strip()
+    ref_text_raw = ref_result["text"].strip()
+    hyp_text_raw = hyp_result["text"].strip()
+    
+    ref_text = normalize_text(ref_text_raw)
+    hyp_text = normalize_text(hyp_text_raw)
 
     error = wer(ref_text, hyp_text)
-    print(f"\n Word Error Rate (WER): {error:.4f}")
+    
+    print(f"\n📝 Normalized transcriptions:")
     print(f"→ Ref: {ref_text}")
     print(f"→ Hyp: {hyp_text}")
+    print(f"\n📊 Word Error Rate (WER): {error:.4f}")
 
     return error
 
 
 # === RUN HERE ===
-ref = "audio_files/male_target_audio.flac"
-hyp = "audio_files/output_audio/two_channel_female.flac"
+ref = "target_11.flac"
+hyp = "processed_signal.wav"
 wer_value = compute_wer_from_audio(ref, hyp)
-print(f"\nFinal WER: {wer_value:.2%}")
