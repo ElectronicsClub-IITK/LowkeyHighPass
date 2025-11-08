@@ -7,8 +7,8 @@ import time
 def main():
     # Configuration
     config = {
-        'train_data': 'data/train/',
-        'val_data': 'data/val/',
+        'train_data': 'Abhinav_Former/data/train',
+        'val_data': 'Abhinav_Former/data/val',
         'n_epochs': 100,
         'batch_size': 4,  # Reduce if GPU memory issues
         'lr': 1e-4,
