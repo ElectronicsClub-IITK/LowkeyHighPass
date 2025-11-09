@@ -7,8 +7,8 @@ import time
 def main():
     # Configuration
     config = {
-        'train_data': 'Abhinav_Former/data/train',
-        'val_data': 'Abhinav_Former/data/val',
+        'train_mat_file': "C:/Users/abhin/OneDrive/Desktop/SpainP_Cup/project_reformer/LowkeyHighPass/Abhinav_Former/data/train",
+        'val_mat_file': "C:/Users/abhin/OneDrive/Desktop/SpainP_Cup/project_reformer/LowkeyHighPass/Abhinav_Former/data/val",
         'n_epochs': 100,
         'batch_size': 4,  # Reduce if GPU memory issues
         'lr': 1e-4,
@@ -26,16 +26,17 @@ def main():
     print("="*60 + "\n")
     
     # Check data exists
-    if not Path(config['train_data']).exists():
-        print(f"ERROR: Training data not found at {config['train_data']}")
+    if not Path(config['train_mat_file']).exists():
+        print(f"ERROR: Training data not found at {config['train_mat_file']}")
         sys.exit(1)
     
     # Count training files
-    train_files = list(Path(config['train_data']).glob('*.mat'))
+    train_files = list(Path(config['train_mat_file']).glob('*.mat'))
     print(f"Found {len(train_files)} training files")
     
-    if config['val_data'] and Path(config['val_data']).exists():
-        val_files = list(Path(config['val_data']).glob('*.mat'))
+    
+    if config.get('val_mat_file') and Path(config['val_mat_file']).exists():
+        val_files = list(Path(config['val_mat_file']).glob('*.mat'))
         print(f"Found {len(val_files)} validation files")
     
     print("\nStarting training in 3 seconds...")
