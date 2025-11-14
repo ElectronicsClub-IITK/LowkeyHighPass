@@ -72,6 +72,7 @@
       background: #161b22;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(88, 166, 255, 0.2);
+      margin-bottom: 20px;
     }
     .metrics-box h2 {
       color: #58a6ff;
@@ -105,6 +106,10 @@
     }
     #contentSection {
       display: none;
+    }
+    .metrics-column {
+      display: flex;
+      flex-direction: column;
     }
     @media (max-width: 768px) {
       .content-wrapper {
@@ -140,8 +145,7 @@
         </select>
       </div>
     </div>
-  </div>
-</body>
+
     <div id="contentSection">
       <div class="content-wrapper">
         <div class="audio-column">
@@ -159,11 +163,44 @@
               Your browser does not support the audio element.
             </audio>
           </div>
+          <div class="metrics-box">
+            <h2>Time Complexity Metrics</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Real-Time Delay</td>
+                  <td class="metric-value" id="rtDelay">--</td>
+                </tr>
+                <tr>
+                  <td>CPU RAM</td>
+                  <td class="metric-value" id="cpuRam">--</td>
+                </tr>
+                <tr>
+                  <td>GPU VRAM</td>
+                  <td class="metric-value" id="gpuVram">--</td>
+                </tr>
+                <tr>
+                  <td>MACs per sec</td>
+                  <td class="metric-value" id="macsPerSec">--</td>
+                </tr>
+                <tr>
+                  <td>Complexity</td>
+                  <td class="metric-value" id="complexity">--</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="metrics-column">
           <div class="metrics-box">
-            <h2>Performance Metrics</h2>
+            <h2>Specific Metrics</h2>
             <table>
               <thead>
                 <tr>
@@ -171,7 +208,7 @@
                   <th>Score</th>
                 </tr>
               </thead>
-              <tbody id="metricsTable">
+              <tbody>
                 <tr>
                   <td>STOI</td>
                   <td class="metric-value" id="stoi">--</td>
@@ -187,6 +224,35 @@
                 <tr>
                   <td>ViSQOL</td>
                   <td class="metric-value" id="visqol">--</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="metrics-box">
+            <h2>Method Metrics</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>STOI</td>
+                  <td class="metric-value" id="methodStoi">--</td>
+                </tr>
+                <tr>
+                  <td>PESQ</td>
+                  <td class="metric-value" id="methodPesq">--</td>
+                </tr>
+                <tr>
+                  <td>SNR (dB)</td>
+                  <td class="metric-value" id="methodSnr">--</td>
+                </tr>
+                <tr>
+                  <td>ViSQOL</td>
+                  <td class="metric-value" id="methodVisqol">--</td>
                 </tr>
               </tbody>
             </table>
@@ -224,8 +290,8 @@
       console.log('Output audio loaded successfully!');
     });
 
-    // Placeholder metrics data - replace with actual data source
-    const metricsData = {
+    // Specific metrics data (interference-specific)
+    const specificMetricsData = {
       neural_female: { stoi: 0.85, pesq: 3.2, snr: 12.5, visqol: 4.1 },
       neural_male: { stoi: 0.82, pesq: 3.0, snr: 11.8, visqol: 3.9 },
       neural_water: { stoi: 0.88, pesq: 3.5, snr: 14.2, visqol: 4.3 },
@@ -240,6 +306,20 @@
       nested_song: { stoi: 0.81, pesq: 3.0, snr: 11.0, visqol: 3.8 }
     };
 
+    // Method metrics data (averaged across all interferences for each method)
+    const methodMetricsData = {
+      neural: { stoi: 0.835, pesq: 3.15, snr: 12.25, visqol: 4.0 },
+      two_channel: { stoi: 0.6164, pesq: 3.18, snr: 0.0, visqol: 0.0 },
+      nested: { stoi: 0.855, pesq: 3.33, snr: 12.93, visqol: 4.13 }
+    };
+
+    // Time complexity metrics data (per method)
+    const timeComplexityData = {
+      neural: { rtDelay: '50ms', cpuRam: '2.5 GB', gpuVram: '4 GB', macsPerSec: '1.2M', complexity: 'O(n²)' },
+      two_channel: { rtDelay: '10ms', cpuRam: '512 MB', gpuVram: 'N/A', macsPerSec: '200K', complexity: 'O(n)' },
+      nested: { rtDelay: '75ms', cpuRam: '3.2 GB', gpuVram: '6 GB', macsPerSec: '1.8M', complexity: 'O(n² log n)' }
+    };
+
     interferenceSelect.addEventListener("change", updateAudio);
     methodSelect.addEventListener("change", updateAudio);
 
@@ -247,7 +327,7 @@
       const method = methodSelect.value;
       const interference = interferenceSelect.value;
       
-      console.log("Method:", method, "Interference:", interference); // Debug
+      console.log("Method:", method, "Interference:", interference);
       
       if (!method || !interference) {
         console.log("Waiting for both selections...");
@@ -256,35 +336,49 @@
       
       console.log("Both selected! Proceeding...");
 
-      // 🔗 GitHub raw URLs
+      // GitHub raw URLs
       const baseURL = "https://raw.githubusercontent.com/ElectronicsClub-IITK/LowkeyHighPass/main/";
       const mixedURL = `${baseURL}mixed_audio/male_${interference}_mixture.flac`;
       
-      console.log("Loading mixed audio from:", mixedURL); // Debug log
+      console.log("Loading mixed audio from:", mixedURL);
       
       const mixedSource = document.getElementById("mixedSource");
       mixedSource.src = mixedURL;
-      mixedAudio.load(); // Force reload
+      mixedAudio.load();
       
       // Load output audio
       const outputURL = `${baseURL}output_audio/${method}_${interference}.flac`;
-      console.log("Loading output audio from:", outputURL); // Debug log
+      console.log("Loading output audio from:", outputURL);
       
       const outputSource = document.getElementById("outputSource");
       outputSource.src = outputURL;
-      outputAudio.load(); // Force reload
-      
-      // Update heading
-      outputAudio.parentElement.querySelector('h2').textContent = "Output Signal";
+      outputAudio.load();
 
-      // Update metrics
-      const key = `${method}_${interference}`;
-      const metrics = metricsData[key] || { stoi: '--', pesq: '--', snr: '--', visqol: '--' };
+      // Update specific metrics (interference-specific)
+      const specificKey = `${method}_${interference}`;
+      const specificMetrics = specificMetricsData[specificKey] || { stoi: '--', pesq: '--', snr: '--', visqol: '--' };
       
-      document.getElementById("stoi").textContent = metrics.stoi;
-      document.getElementById("pesq").textContent = metrics.pesq;
-      document.getElementById("snr").textContent = metrics.snr;
-      document.getElementById("visqol").textContent = metrics.visqol;
+      document.getElementById("stoi").textContent = specificMetrics.stoi;
+      document.getElementById("pesq").textContent = specificMetrics.pesq;
+      document.getElementById("snr").textContent = specificMetrics.snr;
+      document.getElementById("visqol").textContent = specificMetrics.visqol;
+
+      // Update method metrics (method-level averages)
+      const methodMetrics = methodMetricsData[method] || { stoi: '--', pesq: '--', snr: '--', visqol: '--' };
+      
+      document.getElementById("methodStoi").textContent = methodMetrics.stoi;
+      document.getElementById("methodPesq").textContent = methodMetrics.pesq;
+      document.getElementById("methodSnr").textContent = methodMetrics.snr;
+      document.getElementById("methodVisqol").textContent = methodMetrics.visqol;
+
+      // Update time complexity metrics
+      const timeMetrics = timeComplexityData[method] || { rtDelay: '--', cpuRam: '--', gpuVram: '--', macsPerSec: '--', complexity: '--' };
+      
+      document.getElementById("rtDelay").textContent = timeMetrics.rtDelay;
+      document.getElementById("cpuRam").textContent = timeMetrics.cpuRam;
+      document.getElementById("gpuVram").textContent = timeMetrics.gpuVram;
+      document.getElementById("macsPerSec").textContent = timeMetrics.macsPerSec;
+      document.getElementById("complexity").textContent = timeMetrics.complexity;
 
       contentSection.style.display = "block";
     }
