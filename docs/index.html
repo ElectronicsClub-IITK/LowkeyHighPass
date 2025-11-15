@@ -160,10 +160,6 @@
                 <td>SNR (dB)</td>
                 <td class="metric-value" id="methodSnr">--</td>
               </tr>
-              <tr>
-                <td>ViSQOL</td>
-                <td class="metric-value" id="methodVisqol">--</td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -178,10 +174,6 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Real-Time Delay</td>
-                <td class="metric-value" id="rtDelay">--</td>
-              </tr>
               <tr>
                 <td>CPU RAM</td>
                 <td class="metric-value" id="cpuRam">--</td>
@@ -255,17 +247,15 @@
       }
 
       // Update method metrics
-      const methodMetrics = methodMetricsData[method] || { stoi: '--', pesq: '--', snr: '--', visqol: '--' };
+      const methodMetrics = methodMetricsData[method] || { stoi: '--', pesq: '--', snr: '--' };
       
       document.getElementById("methodStoi").textContent = methodMetrics.stoi;
       document.getElementById("methodPesq").textContent = methodMetrics.pesq;
       document.getElementById("methodSnr").textContent = methodMetrics.snr;
-      document.getElementById("methodVisqol").textContent = methodMetrics.visqol;
 
       // Update time complexity metrics
-      const timeMetrics = timeComplexityData[method] || { rtDelay: '--', cpuRam: '--', gpuVram: '--', macsPerSec: '--', complexity: '--' };
+      const timeMetrics = timeComplexityData[method] || { cpuRam: '--', gpuVram: '--', macsPerSec: '--', complexity: '--' };
       
-      document.getElementById("rtDelay").textContent = timeMetrics.rtDelay;
       document.getElementById("cpuRam").textContent = timeMetrics.cpuRam;
       document.getElementById("gpuVram").textContent = timeMetrics.gpuVram;
       document.getElementById("macsPerSec").textContent = timeMetrics.macsPerSec;
@@ -276,8 +266,6 @@
   </script>
 </body>
 </html>
-
-
 
 
 
