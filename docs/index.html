@@ -121,9 +121,7 @@
         <select id="method">
           <option value="">-- Choose Method --</option>
           <option value="neural_reverb">Neural Beamformer - Reverb</option>
-          <option value="neural_anechoic">Neural Beamformer - Anechoic</option>
           <option value="two_channel_audiozooming">Two Channel AudioZooming</option>
-          <option value="neural_transformer_reverb">Neural Transformer - Reverb</option>
           <option value="neural_transformer_anechoic">Neural Transformer - Anechoic</option>
           <option value="sepformer_das_enh">Sepformer - DAS+Enh</option>
           <option value="sepformer_enh_enh">Sepformer - Enh+Enh</option>
@@ -202,10 +200,8 @@
 // Method metrics data (averaged across all interferences for each method)
 const methodMetricsData = {
   neural_reverb: { stoi: 0.72, pesq: 1.05, snr: 3.7 },
-  neural_anechoic: { stoi: 0.0, pesq: 0.0, snr: 0.0 },
   two_channel_audiozooming: { stoi: 0.61, pesq: 3.18, snr: 0.0 },
-  neural_transformer_reverb: { stoi: 0.0, pesq: 0.0, snr: 0.0 },
-  neural_transformer_anechoic: { stoi: 0.0, pesq: 0.0, snr: 0.0 },
+  neural_transformer_anechoic: { stoi: 0.853, pesq: 1.759, snr: 12.46 },
   sepformer_das_enh: { stoi: 0.814, pesq: 2.655, snr: -0.28 },
   sepformer_enh_enh: { stoi: 0.761, pesq: 2.077, snr: 6.79 },
   sepformer_mark3: { stoi: 0.798, pesq: 2.433, snr: 6.70 },
@@ -216,10 +212,8 @@ const methodMetricsData = {
 // Time complexity metrics data (per method)
 const timeComplexityData = {
   neural_reverb: { cpuRam: '0.0 GB', gpuVram: '0.0 GB', macsPerSec: '0.0M', complexity: '0.0' },
-  neural_anechoic: { cpuRam: '0.0 GB', gpuVram: '0.0 GB', macsPerSec: '0.0M', complexity: '0.0' },
   two_channel_audiozooming: { cpuRam: '2.87 MB', gpuVram: 'N/A', macsPerSec: '27.3 M', complexity: 'O (F*M^3)' },
-  neural_transformer_reverb: { cpuRam: '0.0 GB', gpuVram: '0.0 GB', macsPerSec: '0.0M', complexity: '0.0' },
-  neural_transformer_anechoic: { cpuRam: '0.0 GB', gpuVram: '0.0 GB', macsPerSec: '0.0M', complexity: '0.0' },
+  neural_transformer_anechoic: { cpuRam: '988.118 MB', gpuVram: '770.26 MB', macsPerSec: '216107.67M', complexity: 'O(L^2*d)' },
   sepformer_das_enh: { cpuRam: '1.7 GB', gpuVram: '0.0 GB', macsPerSec: '11368.87M', complexity: 'O (L^2*d)' },
   sepformer_enh_enh: { cpuRam: '1.7 GB', gpuVram: '0.0 GB', macsPerSec: '11368.87M', complexity: 'O (L^2*d)' },
   sepformer_mark3: { cpuRam: '1.2 GB', gpuVram: '0.0 GB', macsPerSec: '10502.66M', complexity: 'O (L^2*d)' },
