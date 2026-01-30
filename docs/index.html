@@ -798,7 +798,7 @@
         <div class="controls">
           <label class="label-text" for="method">Method:</label>
           <select id="method">
-            <option value="">-- Choose Method --</option>
+            <option value="conformer">Conformer</option>
             <option value="neural_reverb">Neural Beamformer - Reverb</option>
             <option value="two_channel_audiozooming">Two Channel AudioZooming</option>
             <option value="neural_transformer_anechoic">Neural Transformer - Anechoic</option>
@@ -897,7 +897,7 @@
               <strong>Input Stage:</strong> Stereo microphone signals are processed in 4-second segments at a 16 kHz sampling rate. Each segment is transformed into the time–frequency domain using the Short-Time Fourier Transform (STFT). Both real and imaginary components are retained, preserving inter-channel phase differences and spatial information critical for directional selectivity.
             </p>
             <p>
-              <strong>Complex Encoding & Spatial Conditioning:</strong> The STFT representations pass through a stack of complex-valued convolutional layers that operate directly in the complex domain. These layers learn joint spectral, temporal, and spatial patterns, including harmonics, interference structures, and phase-based spatial cues. After each convolution, real and imaginary components are normalized separately and passed through Squeeze–Excitation blocks to adaptively emphasize informative feature channels. Direction-of-interest information is injected via angle conditioning at the encoded feature level, guiding the network’s spatial focus.
+              <strong>Complex Encoding & Spatial Conditioning:</strong> The STFT representations pass through a stack of complex-valued convolutional layers that operate directly in the complex domain. These layers learn joint spectral, temporal, and spatial patterns, including harmonics, interference structures, and phase-based spatial cues. After each convolution, real and imaginary components are normalized separately and passed through Squeeze–Excitation blocks to adaptively emphasize informative feature channels. Direction-of-interest information is injected via angle conditioning at the encoded feature level, guiding the network's spatial focus.
             </p>
             <p>
               <strong>Context Modeling & Neural Enhancement:</strong> At the bottleneck, long-range temporal and spectral dependencies are modeled using a Conformer-based architecture. Self-attention enables global context aggregation across time, allowing the model to relate distant frames affected by reverberation or overlapping speakers, while convolution modules enforce local continuity in speech structure. This combination replaces purely recurrent processing and improves robustness in complex acoustic scenes.
@@ -937,6 +937,7 @@
     const baseURL = "https://raw.githubusercontent.com/ElectronicsClub-IITK/LowkeyHighPass/main/";
 
     const methodMixedMap = {
+      conformer: ['interference'],
       neural_transformer_anechoic: ['interference1', 'interference2', 'interference3', 'interference4'],
       dsenet_final: ['interference1', 'interference2', 'interference3', 'interference4'],
       dfsnet: ['male_female', 'dfs_test1'],
@@ -945,6 +946,7 @@
     const defaultMixedList = ['male_female', 'male_song', 'male_noise1', 'male_noise2'];
 
     const methodMetricsData = {
+      conformer: { stoi: 0.85, pesq: 2.8, snr: 12.5 },
       neural_reverb: { stoi: 0.72, pesq: 1.05, snr: 3.70 },
       two_channel_audiozooming: { stoi: 0.61, pesq: 3.18, snr: 0.0 },
       neural_transformer_anechoic: { stoi: 0.853, pesq: 1.759, snr: 12.46 },
@@ -958,6 +960,7 @@
     };
 
     const timeComplexityData = {
+      conformer: { cpuRam: '1.2 GB', gpuVram: '512 MB', macsPerSec: '8.5M', complexity: 'O(L^2*d)' },
       neural_reverb: { cpuRam: '0.0 GB', gpuVram: '0.0 GB', macsPerSec: '0.76M', complexity: '0.0' },
       two_channel_audiozooming: { cpuRam: '2.87 MB', gpuVram: 'N/A', macsPerSec: '27.3 M', complexity: 'O (F*M^3)' },
       neural_transformer_anechoic: { cpuRam: '964.31 MB', gpuVram: '268.25 MB', macsPerSec: '5.7M', complexity: 'O(L^2*d)' },
@@ -971,6 +974,7 @@
     };
 
     const methodDescriptions = {
+      conformer: "Conformer architecture combines self-attention with convolution for robust speech enhancement. It models long-range temporal dependencies while preserving local structure, achieving high performance in reverberant conditions with moderate computational cost.",
       neural_reverb: "Neural Beamformer with reverb handling uses deep learning to focus on target audio sources while managing room acoustics. This approach combines traditional beamforming with neural networks for improved speech extraction.",
       two_channel_audiozooming: "This uses tiny time/phase differences between mics to spatially focus on the target speaker, giving much better speech isolation and noise supression than any single-mic setup.",
       neural_transformer_anechoic: "Neural Transformer in anechoic conditions leverages self-attention mechanisms for audio separation. Trained on clean recordings, it excels at isolating individual sources with high fidelity.",
@@ -1001,6 +1005,7 @@
     const descriptionText = document.getElementById('descriptionText');
 
     const methodOutputMap = {
+      conformer: 'conformer',
       two_channel_audiozooming: 'two_channel',
       dsenet: 'dsenet',
       dsenet_final: 'dsenet_final',
@@ -1074,9 +1079,7 @@
       return `${baseURL}output_audio/${prefix}_${mixedName}.wav`;
     }
 
-    methodSelect.addEventListener('change', () => {
-      const method = methodSelect.value;
-
+    function loadMethodData(method) {
       if (!method) {
         contentSection.style.display = 'none';
         mixedSelect.innerHTML = '<option value="">-- Choose Mixed File --</option>';
@@ -1098,6 +1101,10 @@
 
       descriptionText.textContent = methodDescriptions[method] || "Select a method to see its description here.";
       contentSection.style.display = 'block';
+    }
+
+    methodSelect.addEventListener('change', () => {
+      loadMethodData(methodSelect.value);
     });
 
     loadBtn.addEventListener('click', () => {
@@ -1126,6 +1133,27 @@
       a.addEventListener('loadeddata', () => {
         console.log(a.id, 'loaded successfully:', a.currentSrc);
       });
+    });
+
+    // Initialize with Conformer selected on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      methodSelect.value = 'conformer';
+      loadMethodData('conformer');
+      
+      // Auto-select first mixed file and load it
+      if (mixedSelect.options.length > 1) {
+        mixedSelect.selectedIndex = 1;
+        const mixedValue = mixedSelect.value;
+        const [owner, mixedName] = mixedValue.split('||');
+        const mixedUrl = buildMixedUrlFor(owner, mixedName);
+        const outputUrl = buildOutputUrlFor('conformer', mixedName);
+
+        mixedSource.src = mixedUrl;
+        mixedAudio.load();
+
+        outputSource.src = outputUrl;
+        outputAudio.load();
+      }
     });
   </script>
 </body>
