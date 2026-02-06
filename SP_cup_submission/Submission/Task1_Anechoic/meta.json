@@ -1,6 +1,7 @@
 {
-  "target_angle": 90,
-  "interf_angle": 40,
-  "rt60": 0.5,
-  "note": "Fixed Geometry"
+  "target_angle": 124.43227601878232,
+  "interf_angle": 177.10786694130942,
+  "fov_angle": 143.80909803482274,
+  "fov_width": 49.671404213390794,
+  "rt60": 0
 }
