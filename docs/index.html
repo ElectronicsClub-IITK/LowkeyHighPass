@@ -5,6 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Signal Processing Cup 2026 | IIT Kanpur Lowkey High-Pass</title>
   <style>
+  /* Prevent horizontal overflow by using border-box sizing */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  /* Make media responsive and avoid overflowing their containers */
+  img, iframe, video { max-width: 100%; height: auto; display: block; }
+
+  /* Fixed navbar: keep navigation visible at top */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  /* Reserve space for the fixed navbar so content doesn't jump under it */
+  body { padding-top: 72px; }
+  @media (max-width: 768px) { body { padding-top: 96px; } }
+
     body { 
       font-family: "Inter", "Segoe UI", sans-serif; 
       background: #dbeafe; 
@@ -13,6 +33,7 @@
       padding: 0; 
       line-height: 1.7; 
       min-height: 100vh; 
+      font-size: 18px; /* larger base so content fills the screen */
     }
     /* Math equation box */
 .math-box {
@@ -98,9 +119,9 @@
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start; /* brand on left */
       align-items: center;
-      padding: 0 40px;
+      padding: 0 20px;
       height: 60px;
     }
     
@@ -110,6 +131,48 @@
       list-style: none;
       margin: 0;
       padding: 0;
+      margin-left: auto; /* push links to the right */
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .nav-brand-text {
+      font-weight: 700;
+      color: #0f172a;
+      margin-right: 18px;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      white-space: nowrap;
+      font-size: 1.02em;
+      cursor: pointer;
+    }
+
+    .nav-brand-text.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .nav-brand-text .nav-brand-icon {
+      display: inline-flex;
+      width: 28px;
+      height: 28px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #3b82f6;
+      color: white;
+      margin-right: 8px;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.18);
+      transform: translateY(-6px) scale(0.96);
+      transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;
+      opacity: 0;
+    }
+
+    .nav-brand-text .nav-brand-label { vertical-align: middle; }
+
+    .nav-brand-text.visible .nav-brand-icon {
+      transform: translateY(0) scale(1);
+      opacity: 1;
     }
     
     .nav-links a {
@@ -122,6 +185,39 @@
       transition: all 0.3s ease;
       border-bottom: 3px solid transparent;
     }
+
+    /* Dropdown menu for Demonstrations */
+    .nav-item { position: relative; }
+    .nav-item .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+      border-radius: 8px;
+      min-width: 220px;
+      display: none;
+      z-index: 200;
+      /* remove default ul padding and add small internal padding */
+      padding: 6px 0;
+      list-style: none;
+    }
+    .nav-item .dropdown-menu li { list-style: none; margin: 0; padding: 0; }
+    .nav-item .dropdown-menu a {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 18px; /* increased horizontal padding so clickable region spans full line */
+      color: #0f172a;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .nav-item .dropdown-menu a:hover { background: #f8fafc; color: #1e40af; }
+    .nav-item:hover .dropdown-menu,
+    .nav-item:focus-within .dropdown-menu { display: block; }
+    /* keep dropdown open when .open is added (used for touch devices) */
+    .nav-item.open .dropdown-menu { display: block; }
     
     .nav-links a:hover {
       color: #1e40af;
@@ -138,6 +234,16 @@
       max-width: 1200px; 
       margin: 0 auto; 
       padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* center main boxes horizontally */
+    }
+
+    /* Keep inner text left-aligned for readability inside boxes */
+    .section-card, .demo-section, .header-section, .architecture-section, .figure-box {
+      width: 100%;
+      max-width: 1100px;
+      text-align: left;
     }
     
     .page {
@@ -343,7 +449,12 @@
       grid-template-columns: 1fr 1fr; 
       gap: 25px; 
       margin-top: 30px; 
+      align-items: center; /* vertically center columns */
+      justify-content: center; /* center the grid as a whole */
     }
+
+    /* constrain grid column boxes so they appear as centered columns */
+    .content-wrapper > div { width: 100%; max-width: 520px; }
     
     .audio-box, .metrics-box { 
       padding: 24px; 
@@ -352,6 +463,16 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.08); 
       border: 1px solid #e2e8f0; 
       transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* center inner content vertically */
+      align-items: center; /* center inner content horizontally */
+      text-align: center;
+    }
+
+    /* Increase vertical gap between stacked audio boxes */
+    .content-wrapper > div .audio-box + .audio-box {
+      margin-top: 28px;
     }
     
     .audio-box:hover, .metrics-box:hover {
@@ -430,11 +551,18 @@
       text-align: center;
     }
     
+    /* architecture content: allow text to flow around diagram on wide screens */
     .architecture-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      align-items: start;
+      display: block;
+      position: relative;
+      overflow: visible;
+    }
+
+    /* clearfix so floated diagram stays inside the parent block */
+    .architecture-content::after {
+      content: "";
+      display: table;
+      clear: both;
     }
     
     .architecture-text {
@@ -459,20 +587,48 @@
     }
     
     .architecture-diagram {
-      background: #f8fafc;
+      background: transparent;
       border-radius: 8px;
-      padding: 20px;
-      border: 2px solid #e2e8f0;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+      padding: 0;
+      border: none;
+      display: block;
+      /* float the diagram to the right so text wraps on large viewports */
+      float: right;
+      box-sizing: border-box;
+      width: clamp(280px, 46%, 720px);
+      margin-left: 28px;
+      margin-bottom: 18px;
+      max-height: 720px;
+      position: relative;
+      transform: translateY(-10px); /* lift diagram slightly */
+    }
+
+    /* ensure the floating diagram never exceeds its containing card */
+    .architecture-section .architecture-diagram { max-width: 48%; }
+
+    .architecture-diagram img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+      object-fit: contain;
+      background: white;
+      transform: translateY(-25px); /* lift image slightly to align with text */
     }
     
     .diagram-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px; /* ensure consistent height so arrows sit evenly */
       background: white;
       border: 2px solid #3b82f6;
       border-radius: 6px;
-      padding: 16px;
+      padding: 16px 16px 20px; /* extra bottom padding so arrow has space */
+      margin-bottom: 15px; /* space between blocks for arrows */
       text-align: center;
       font-weight: 600;
       color: #1e40af;
@@ -488,16 +644,17 @@
     .diagram-block::after {
       content: '↓';
       position: absolute;
-      bottom: -25px;
+      bottom: -30px; /* sit just below the extra padding */
       left: 50%;
       transform: translateX(-50%);
-      font-size: 1.5em;
+      font-size: 1.4em;
       color: #3b82f6;
     }
     
     .diagram-block:last-child::after {
       content: '';
     }
+    .diagram-block:last-child { margin-bottom: 0; }
     
     .diagram-block.input {
       background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
@@ -511,10 +668,23 @@
       background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     }
     
+    @media (max-width: 900px) {
+      /* stop floating on medium and small screens so content stacks */
+      .architecture-diagram {
+        float: none;
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-bottom: 16px;
+        transform: none; /* don't lift on small screens */
+      }
+      .architecture-content { display: block; }
+    }
+
     @media (max-width: 768px) { 
       .container { padding: 20px 10px; } 
       .content-wrapper { grid-template-columns: 1fr; } 
-      .architecture-content { grid-template-columns: 1fr; }
+      .architecture-content { /* already block */ }
       select { min-width: 180px; }
       h1 { font-size: 2em; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -527,9 +697,17 @@
 <body>
   <nav>
     <div class="nav-container">
+      <div id="navBrandText" class="nav-brand-text" aria-hidden="true"></div>
       <ul class="nav-links">
-        <li><a href="#intro" class="nav-link active" data-page="intro">Intro</a></li>
-        <li><a href="#methods" class="nav-link" data-page="methods">Methods</a></li>
+        <li><a href="#intro" class="nav-link active" data-page="intro">Introduction</a></li>
+        <li class="nav-item">
+          <a href="#methods" class="nav-link dropdown-toggle" data-page="methods">Demonstrations ▾</a>
+          <ul class="dropdown-menu" aria-label="Demonstrations menu">
+            <li><a href="#" class="demo-item" data-section="audio-demos">Audio Demos</a></li>
+            <li><a href="#" class="demo-item" data-section="target-angle">Target Angle Calculation</a></li>
+            <li><a href="#" class="demo-item" data-section="zoom-factor">Zoom Factor Integration</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
   </nav>
@@ -556,41 +734,13 @@
           </p>
         </div>
 
+
         <div class="section-card">
-          <h3 class="section-title">Reference Papers</h3>
-          <p class="section-text">
-            The competition provided reference papers that explore related but distinct approaches to audio processing. Key differences from the SP Cup challenge include:
-          </p>
-          <div class="highlight-box">
-            <p class="section-text" style="margin-bottom: 12px;">
-              <strong>Khandelwal et al. - "Two-channel audio zooming system for smartphone":</strong>
-            </p>
-            <ul style="margin: 0; padding-left: 20px;">
-              <li><strong>Audio-only vs Audio-visual:</strong> The paper addresses directional audio enhancement with fixed front direction (90°), whereas the SP Cup requires audio focus to dynamically follow camera zoom in real-time.</li>
-              <li><strong>Reverberation handling:</strong> Treated as a nuisance with mild RT60 (~100ms). The SP Cup explicitly requires RT60 ≈ 0.5s, making reverberation a core design challenge rather than a secondary concern.</li>
-            </ul>
+          <h3 class="section-title">Project Video</h3>
+          <div class="video-wrapper" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;">
+            <iframe src="https://www.youtube.com/embed/4f2WXQVe5Hc?si=IMSTv_HWP5_-NpxH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
           </div>
-          <div class="highlight-box">
-            <p class="section-text" style="margin-bottom: 12px;">
-              <strong>Yu & Yu - "Deep Audio Zooming: Beamwidth-Controllable Neural Beamformer":</strong>
-            </p>
-            <ul style="margin: 0; padding-left: 20px;">
-              <li>The paper enhances all speakers within a region collectively, while the SP Cup targets single-source separation with one desired source and one interferer at known angles.</li>
-            </ul>
           </div>
-          <div class="highlight-box">
-            <p class="section-text" style="margin-bottom: 12px;">
-              <strong>Nair et al. - "Audiovisual zooming: What you see is what you hear":</strong>
-            </p>
-            <ul style="margin: 0; padding-left: 20px;">
-              <li><strong>FOV-based approach:</strong> Formulates the problem as field-of-view enhancement but acknowledges reverberation as a significant limitation with no explicit dereverberation mechanism.</li>
-              <li><strong>Model-based only:</strong> Uses purely analytical methods (generalized eigenvalue beamforming) and explicitly avoids machine learning. The SP Cup encourages learning-based and hybrid approaches.</li>
-            </ul>
-          </div>
-          <p class="section-text">
-            These foundational works informed our understanding while highlighting the unique challenges of real-time, audio-visual source separation under edge constraints.
-          </p>
-        </div>
 
         <div class="section-card">
           <h3 class="section-title">Dataset Generated</h3>
@@ -767,29 +917,121 @@
 
  <div class="figure-box">
   <img
-    src="architecture.png"
+    src="SP_Model_Architecture.svg"
     alt="Block diagram of the proposed direction-conditioned DCCRN system"
   />
 
   <div class="figure-caption">
-    <strong>Fig. X.</strong>
-    Block diagram of the proposed direction-conditioned DCCRN architecture.
-    The stereo input is transformed into the complex STFT domain and processed
-    by a complex-valued encoder–decoder network. Target direction information
-    is injected at the bottleneck via angle conditioning, while a dual-path LSTM
-    models long-range temporal and spectral dependencies. A complex ratio mask
-    is estimated and applied to the reference channel, followed by inverse STFT
-    to obtain the enhanced target speech signal.
+    <strong>Fig. 1.</strong>
+    <strong>Architecture of the Proposed Dual-Channel Convolutional Recurrent Neural Network (DCCRNN).</strong> The model features parallel convolutional pathways for spatial and temporal feature extraction, followed by bidirectional recurrent layers (GRU/LSTM) for sequential dependency modeling. Features from both channels are concatenated and processed through fully connected layers with dropout regularization before final classification via softmax activation.
   </div>
 </div>
 
+    <!-- Architecture Section (moved into Introduction) -->
+    <div class="architecture-section">
+      <h3 class="architecture-title">System Architecture & Processing Pipeline</h3>
+      <div class="figure-box" style="margin-bottom: 30px;">
+        <img
+          src="https://raw.githubusercontent.com/ElectronicsClub-IITK/LowkeyHighPass/main/docs/SP_Model.jpeg"
+          alt="System architecture diagram"
+        />
+        <div class="figure-caption">
+          <strong>Fig. 2.</strong>
+          <strong>End-to-End Audio Enhancement System Architecture.</strong> The model processes stereo audio through STFT-based feature extraction, a four-layer CNN encoder (4→256 channels), a spatial-temporal bottleneck with self-attention and angle conditioning, a U-Net decoder with skip connections, and complex mask-based reconstruction to produce enhanced audio output.
+        </div>
+      </div>
+      <div class="architecture-content">
+        <div class="architecture-text">
+          <h4>Audio Processing Framework</h4>
+          <p>
+            The audio-visual zooming system follows a complex-valued, direction-aware speech enhancement pipeline that transforms raw stereo microphone signals into directionally focused target speech. The architecture combines classical time–frequency signal processing with deep neural networks designed to exploit spatial cues, temporal context, and global acoustic structure under overlapping speech conditions.
+          
+          <h4>Key Processing Stages</h4>
+
+          <!-- place diagram here so it floats beside the Key Processing Stages content -->
+          <div class="architecture-diagram">
+            <div class="figure-box" style="margin-bottom: 30px;">
+            <div class="diagram-block input">
+              Dual-Microphone Input
+            </div>
+            <div class="diagram-block processing">
+              Spatial Feature Extraction
+            </div>
+            <div class="diagram-block processing">
+              Beamforming / Directional Filtering
+            </div>
+            <div class="diagram-block processing">
+              Neural Enhancement Network
+            </div>
+            <div class="diagram-block processing">
+              Dereverberation & Noise Suppression
+            </div>
+            <div class="diagram-block output">
+              Enhanced Target Speech Output
+            </div>
+          </div>
+          </div>
+
+          <p>
+            <strong>Input Stage:</strong> Stereo microphone signals are processed in 4-second segments at a 16 kHz sampling rate. Each segment is transformed into the time–frequency domain using the Short-Time Fourier Transform (STFT). Both real and imaginary components are retained, preserving inter-channel phase differences and spatial information critical for directional selectivity.
+          </p>
+          <p>
+            <strong>Complex Encoding & Spatial Conditioning:</strong> The STFT representations pass through a stack of complex-valued convolutional layers that operate directly in the complex domain. These layers learn joint spectral, temporal, and spatial patterns, including harmonics, interference structures, and phase-based spatial cues. After each convolution, real and imaginary components are normalized separately and passed through Squeeze–Excitation blocks to adaptively emphasize informative feature channels. Direction-of-interest information is injected via angle conditioning at the encoded feature level, guiding the network's spatial focus.
+          </p>
+          <p>
+            <strong>Context Modeling & Neural Enhancement:</strong> At the bottleneck, long-range temporal and spectral dependencies are modeled using a Conformer-based architecture. Self-attention enables global context aggregation across time, allowing the model to relate distant frames affected by reverberation or overlapping speakers, while convolution modules enforce local continuity in speech structure. This combination replaces purely recurrent processing and improves robustness in complex acoustic scenes.
+          </p>
+          <p>
+            <strong>Decoding & Output Stage:</strong>The decoder mirrors the encoder using complex transposed convolutions with skip connections to recover fine-grained details. A complex ratio mask is estimated and applied to the reference channel, modulating magnitude while preserving phase. The enhanced waveform is reconstructed via inverse STFT, followed by normalization to ensure perceptual quality and low-latency real-time performance, optimized for metrics such as STOI and PESQ.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+        </div>
+
+        <div class="section-card">
+          <h3 class="section-title">Reference Papers</h3>
+          <p class="section-text">
+            The competition provided reference papers that explore related but distinct approaches to audio processing. Key differences from the SP Cup challenge include:
+          </p>
+          <div class="highlight-box">
+            <p class="section-text" style="margin-bottom: 12px;">
+              <strong>Khandelwal et al. - "Two-channel audio zooming system for smartphone":</strong>
+            </p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li><strong>Audio-only vs Audio-visual:</strong> The paper addresses directional audio enhancement with fixed front direction (90°), whereas the SP Cup requires audio focus to dynamically follow camera zoom in real-time.</li>
+              <li><strong>Reverberation handling:</strong> Treated as a nuisance with mild RT60 (~100ms). The SP Cup explicitly requires RT60 ≈ 0.5s, making reverberation a core design challenge rather than a secondary concern.</li>
+            </ul>
+          </div>
+          <div class="highlight-box">
+            <p class="section-text" style="margin-bottom: 12px;">
+              <strong>Yu & Yu - "Deep Audio Zooming: Beamwidth-Controllable Neural Beamformer":</strong>
+            </p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>The paper enhances all speakers within a region collectively, while the SP Cup targets single-source separation with one desired source and one interferer at known angles.</li>
+            </ul>
+          </div>
+          <div class="highlight-box">
+            <p class="section-text" style="margin-bottom: 12px;">
+              <strong>Nair et al. - "Audiovisual zooming: What you see is what you hear":</strong>
+            </p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li><strong>FOV-based approach:</strong> Formulates the problem as field-of-view enhancement but acknowledges reverberation as a significant limitation with no explicit dereverberation mechanism.</li>
+              <li><strong>Model-based only:</strong> Uses purely analytical methods (generalized eigenvalue beamforming) and explicitly avoids machine learning. The SP Cup encourages learning-based and hybrid approaches.</li>
+            </ul>
+          </div>
+          <p class="section-text">
+            These foundational works informed our understanding while highlighting the unique challenges of real-time, audio-visual source separation under edge constraints.
+          </p>
         </div>
       </div>
     </div>
 
     <!-- Methods Page -->
     <div id="methods" class="page">
-      <div class="demo-section">
+        <div class="demo-section" id="audio-demos">
         <h3 class="section-title" style="justify-content: center;">Interactive Audio Demonstration</h3>
         <p style="text-align: center; color: #64748b; margin-bottom: 25px; font-size: 0.98em;">
           Select a processing method and input audio file to compare model outputs and view performance metrics
@@ -798,7 +1040,7 @@
         <div class="controls">
           <label class="label-text" for="method">Method:</label>
           <select id="method">
-            <option value="conformer">Conformer</option>
+            <option value="conformer">DCCRNN Conformer</option>
             <option value="neural_reverb">Neural Beamformer - Reverb</option>
             <option value="two_channel_audiozooming">Two Channel AudioZooming</option>
             <option value="neural_transformer_anechoic">Neural Transformer - Anechoic</option>
@@ -873,63 +1115,52 @@
         </div>
       </div>
 
-      <!-- Architecture Section -->
-      <div class="architecture-section">
-        <h3 class="architecture-title">System Architecture & Processing Pipeline</h3>
-        <div class="figure-box" style="margin-bottom: 30px;">
-          <img
-            src="https://raw.githubusercontent.com/ElectronicsClub-IITK/LowkeyHighPass/main/docs/SP_Model.jpeg"
-            alt="System architecture diagram"
-          />
-          <div class="figure-caption">
-            <strong>System Architecture:</strong>
-            Description of the architecture diagram.
-          </div>
-        </div>
-        <div class="architecture-content">
-          <div class="architecture-text">
-            <h4>Audio Processing Framework</h4>
-            <p>
-              The audio-visual zooming system follows a complex-valued, direction-aware speech enhancement pipeline that transforms raw stereo microphone signals into directionally focused target speech. The architecture combines classical time–frequency signal processing with deep neural networks designed to exploit spatial cues, temporal context, and global acoustic structure under overlapping speech conditions.
-            
-            <h4>Key Processing Stages</h4>
-            <p>
-              <strong>Input Stage:</strong> Stereo microphone signals are processed in 4-second segments at a 16 kHz sampling rate. Each segment is transformed into the time–frequency domain using the Short-Time Fourier Transform (STFT). Both real and imaginary components are retained, preserving inter-channel phase differences and spatial information critical for directional selectivity.
-            </p>
-            <p>
-              <strong>Complex Encoding & Spatial Conditioning:</strong> The STFT representations pass through a stack of complex-valued convolutional layers that operate directly in the complex domain. These layers learn joint spectral, temporal, and spatial patterns, including harmonics, interference structures, and phase-based spatial cues. After each convolution, real and imaginary components are normalized separately and passed through Squeeze–Excitation blocks to adaptively emphasize informative feature channels. Direction-of-interest information is injected via angle conditioning at the encoded feature level, guiding the network's spatial focus.
-            </p>
-            <p>
-              <strong>Context Modeling & Neural Enhancement:</strong> At the bottleneck, long-range temporal and spectral dependencies are modeled using a Conformer-based architecture. Self-attention enables global context aggregation across time, allowing the model to relate distant frames affected by reverberation or overlapping speakers, while convolution modules enforce local continuity in speech structure. This combination replaces purely recurrent processing and improves robustness in complex acoustic scenes.
-            </p>
-            <p>
-              <strong>Decoding & Output Stage:</strong>The decoder mirrors the encoder using complex transposed convolutions with skip connections to recover fine-grained details. A complex ratio mask is estimated and applied to the reference channel, modulating magnitude while preserving phase. The enhanced waveform is reconstructed via inverse STFT, followed by normalization to ensure perceptual quality and low-latency real-time performance, optimized for metrics such as STOI and PESQ.
-            </p>
-          </div>
-          
-          <div class="architecture-diagram">
-            <div class="diagram-block input">
-              Dual-Microphone Input
+      <!-- Target Angle Calculation section -->
+      <div id="target-angle" class="demo-section">
+        <h3 class="section-title">Target Angle Calculation from Video Feed</h3>
+        <div class="section-card">
+          <p class="section-text">This demo shows how the system estimates target speaker angle from a camera feed. Use the two sample videos below to compare detection results.</p>
+          <div class="video-grid" style="display:flex; gap:12px; margin-top:12px;">
+            <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
+              <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src=""></video>
+              <div class="figure-caption" style="margin-top:8px;">This demo video showcases the target angle Calculation proof-of-concept considering Video Centreline as 0&deg;</div>
             </div>
-            <div class="diagram-block processing">
-              Spatial Feature Extraction
+            <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
+              <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src="zoom_target.mp4"></video>
+              <div class="figure-caption" style="margin-top:8px;"><strong>Vid. 1.</strong> This demo video showcases the target angle estimation process is independent of speaker distance and video feed zoom factor.</div>
             </div>
-            <div class="diagram-block processing">
-              Beamforming / Directional Filtering
-            </div>
-            <div class="diagram-block processing">
-              Neural Enhancement Network
-            </div>
-            <div class="diagram-block processing">
-              Dereverberation & Noise Suppression
-            </div>
-            <div class="diagram-block output">
-              Enhanced Target Speech Output
-            </div>
-            
           </div>
         </div>
       </div>
+
+      <!-- Zoom Factor Integration section -->
+      <div id="zoom-factor" class="demo-section">
+        <h3 class="section-title">Zoom Factor Integration</h3>
+        <div class="section-card">
+          <p class="section-text">Examples demonstrating audio behavior as zoom factor changes. Three sample outputs are provided below.</p>
+          <div class="audio-grid" style="display:flex; gap:12px; margin-top:12px; align-items:center;">
+            <div style="flex:1; background:#fff; border-radius:8px; padding:12px; border:1px solid #e2e8f0;">
+              <img src="zoom_sample_A.png" alt="Target (Our DCCRNN Output) Image" style="width:100%; height:auto; border-radius:6px; margin-bottom:10px; object-fit:cover;" />
+              <audio controls style="width:100%;" src="zoom_sample_A.wav"></audio>
+              <div class="figure-caption" style="margin-top:8px;">Target (Our DCCRNN Output)</div>
+            </div>
+
+            <div style="flex:1; background:#fff; border-radius:8px; padding:12px; border:1px solid #e2e8f0;">
+              <img src="zoom_sample_B.png" alt="Mixture (Raw Signal) Image" style="width:100%; height:auto; border-radius:6px; margin-bottom:10px; object-fit:cover;" />
+              <audio controls style="width:100%;" src="zoom_sample_B.wav"></audio>
+              <div class="figure-caption" style="margin-top:8px;">Mixture (Raw Signal)</div>
+            </div>
+
+            <div style="flex:1; background:#fff; border-radius:8px; padding:12px; border:1px solid #e2e8f0;">
+              <img src="zoom_sample_C.png" alt="Zoom Factor Integrated Output Image" style="width:100%; height:auto; border-radius:6px; margin-bottom:10px; object-fit:cover;" />
+              <audio controls style="width:100%;" src="zoom_sample_C.wav"></audio>
+              <div class="figure-caption" style="margin-top:8px;">Zoom Factor Integrated Output</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
     </div>
   </div>
 
@@ -1024,16 +1255,66 @@
     const navLinks = document.querySelectorAll('.nav-link');
     const pages = document.querySelectorAll('.page');
 
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const targetPage = link.getAttribute('data-page');
-        
+
+        // If this is the dropdown toggle and we're on a touch device or small screen,
+        // open/close the dropdown instead of immediately navigating.
+        if (link.classList.contains('dropdown-toggle') && (isTouch || window.innerWidth < 900)) {
+          const parent = link.closest('.nav-item');
+          if (parent) {
+            parent.classList.toggle('open');
+            return; // don't navigate
+          }
+        }
+
         navLinks.forEach(l => l.classList.remove('active'));
         pages.forEach(p => p.classList.remove('active'));
-        
+
         link.classList.add('active');
         document.getElementById(targetPage).classList.add('active');
+
+        // when navigating to Methods, default scroll to audio demos
+        if (targetPage === 'methods') {
+          setTimeout(() => {
+            const audioDemo = document.getElementById('audio-demos');
+            if (audioDemo) audioDemo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 60);
+        }
+      });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const openItems = document.querySelectorAll('.nav-item.open');
+      openItems.forEach(item => {
+        if (!item.contains(e.target)) item.classList.remove('open');
+      });
+    });
+
+    // Demo dropdown items: show methods page and scroll to specific section
+    const demoItems = document.querySelectorAll('.demo-item');
+    demoItems.forEach(it => {
+      it.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = it.dataset.section;
+        // activate Methods page
+        navLinks.forEach(l => l.classList.remove('active'));
+        const methodsNav = document.querySelector('.nav-link[data-page="methods"]');
+        if (methodsNav) methodsNav.classList.add('active');
+        pages.forEach(p => p.classList.remove('active'));
+        document.getElementById('methods').classList.add('active');
+        // close dropdown if open
+        const navItem = it.closest('.nav-item');
+        if (navItem) navItem.classList.remove('open');
+        // small delay to ensure page is visible then scroll
+        setTimeout(() => {
+          const targetEl = document.getElementById(sectionId);
+          if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 80);
       });
     });
 
@@ -1155,6 +1436,61 @@
         outputAudio.load();
       }
     });
+
+    // Show 'Lowkey High-Pass' in navbar when header-section is scrolled out of view
+    (function() {
+      const header = document.querySelector('.header-section');
+      const navText = document.getElementById('navBrandText');
+      if (!header || !navText || !window.IntersectionObserver) return;
+
+      // extract short name from header h2 if available
+      const h2 = header.querySelector('h2');
+      const brandName = h2 ? (h2.innerText.split(':').pop().trim()) : 'Lowkey High-Pass';
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            // hide and clear after animation
+            navText.classList.remove('visible');
+            setTimeout(() => { navText.innerHTML = ''; }, 300);
+          } else {
+            // inject icon + label
+            navText.innerHTML = `
+              <span class="nav-brand-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9" />
+                  <path d="M3 6h12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7" />
+                  <path d="M3 18h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7" />
+                </svg>
+              </span>
+              <span class="nav-brand-label">${brandName}</span>
+            `;
+            // force reflow to ensure transitions run
+            void navText.offsetWidth;
+            navText.classList.add('visible');
+          }
+        });
+      }, { root: null, threshold: 0, rootMargin: '-1px' });
+
+      observer.observe(header);
+    })();
+
+    // Keep Demonstrations dropdown open on hover for non-touch devices
+    (function() {
+      if (('ontouchstart' in window) || navigator.maxTouchPoints > 0) return; // skip touch
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        let leaveTimer = null;
+        item.addEventListener('pointerenter', () => {
+          if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+          item.classList.add('open');
+        });
+        item.addEventListener('pointerleave', () => {
+          // small delay to avoid flicker when moving between trigger and menu
+          leaveTimer = setTimeout(() => { item.classList.remove('open'); }, 160);
+        });
+      });
+    })();
   </script>
 </body>
 </html>
