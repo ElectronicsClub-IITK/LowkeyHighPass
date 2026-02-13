@@ -738,7 +738,7 @@
         <div class="section-card">
           <h3 class="section-title">Project Video</h3>
           <div class="video-wrapper" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;">
-            <iframe src="https://www.youtube.com/embed/4f2WXQVe5Hc?si=IMSTv_HWP5_-NpxH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
+            <iframe src="https://www.youtube.com/embed/SZMVmabzxhU?si=r-Lf6Od_uXvudcf0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
           </div>
           </div>
 
@@ -991,6 +991,138 @@
 
         </div>
 
+        <div class="section-card" id="target-angle">
+          <h3 class="section-title">App Integration I. "Target Angle Calculation from Video Feed"</h3>
+          
+          <div class="highlight-box">
+            <p class="section-text">
+              <strong>So here's the deal...</strong> We needed to figure out where the person is actually standing relative to our phone's camera. Sounds simple, right? Well, not when you throw in optical zoom!
+            </p>
+            <p class="section-text" style="margin-bottom: 0;">
+              The whole problem is that when you zoom in, the focal length changes, which messes up all your angle calculations. We had to get creative with this one.
+            </p>
+          </div>
+
+          <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">The Challenge We Faced</h4>
+          <p class="section-text">
+            Standard pinhole camera models just don't cut it when there's optical zooming happening. The effective focal length keeps changing, and if you don't account for that, your angle estimates are basically useless. We learned this the hard way after our first few attempts gave us completely wrong directions!
+          </p>
+
+          <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">Our Solution: Dynamic Focal Length Tracking</h4>
+          <p class="section-text">
+            We came up with a system that <strong>fuses zoom telemetry data with the video stream in real-time</strong>. Basically, we're constantly updating our calculations based on how much the user has zoomed in or out.
+          </p>
+
+          <div class="math-box">
+            <div class="math-label">Step 1: Calculate Dynamic Focal Length</div>
+            <div style="background: white; padding: 12px; border-radius: 4px; margin: 8px 0; text-align: center; font-size: 1.1em;">
+              f(t) = [ W / (2 · tan(FOV<sub>base</sub>/2)) ] × Z(t)
+            </div>
+            <div style="margin-top: 12px; padding: 10px; background: #fff; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.9em;">
+              <strong>Where:</strong><br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">f(t)</code> = effective focal length at time t (pixels)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">W</code> = sensor width (pixels)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">FOV<sub>base</sub></code> = base field of view = 65° (we calibrated this experimentally)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">Z(t)</code> = instantaneous zoom factor from sensor logs
+            </div>
+          </div>
+
+          <div class="math-box">
+            <div class="math-label">Step 2: Convert Pixel Position to Physical Azimuth Angle</div>
+            <div style="background: white; padding: 12px; border-radius: 4px; margin: 8px 0; text-align: center; font-size: 1.1em;">
+              θ<sub>t</sub> = arctan[ (x<sub>t</sub> - W/2) / f(t) ]
+            </div>
+            <div style="margin-top: 12px; padding: 10px; background: #fff; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.9em;">
+              <strong>Where:</strong><br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">θ<sub>t</sub></code> = target azimuth angle relative to camera's optical axis<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">x<sub>t</sub></code> = horizontal pixel coordinate of target's centroid<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">W/2</code> = center of the image sensor<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">f(t)</code> = the focal length we just calculated above
+            </div>
+          </div>
+
+          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <strong>💡 The Cool Part:</strong> This formulation ensures <strong>angular invariance</strong>. That means a person standing at, say, 30° to the left will always give us θ = 30°, no matter how much we've zoomed in. The pixel position changes, but the math adapts!
+          </div>
+
+          <div class="figure-box">
+            <img src="visual_pipeline.png" alt="Visual Localization Pipeline Diagram">
+            <div class="figure-caption">
+              <strong>Figure 3: Visual Localization Pipeline.</strong> Our complete visual frontend showing how we detect faces (S3FD), track them across frames (IOU tracker), identify who's actually speaking (TalkNet audio-visual fusion), and finally calculate their precise azimuth angle using our dynamic geometry module that accounts for real-time zoom changes. This angle then gets fed into the audio model for directional enhancement.
+            </div>
+          </div>
+
+          <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">Why This Works</h4>
+          <p class="section-text">
+            By continuously updating the focal length based on zoom telemetry and using it in our angle calculation, we've effectively <strong>decoupled the visual position from spatial calculations</strong>. Whether the camera is at 1x or 10x zoom, we get the same accurate angle for the same physical position. This was absolutely crucial for making the audio zooming work properly!
+          </p>
+
+          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <strong>🔧 Implementation Note:</strong> We had to synchronize the asynchronous zoom logs with the video frames, which was a bit tricky. Make sure your timestamps are aligned or you'll get jittery angle estimates!
+          </div>
+          
+        </div>
+
+        <div class="section-card" id="zoom-factor">
+          <h3 class="section-title">App Integration II. "Zoom Factor Integration"</h3>
+          
+          <div class="highlight-box">
+            <p class="section-text">
+              <strong>Okay, so here's where things get interesting...</strong> After we get the clean audio from our neural network, we still need to make it feel like you're actually "zooming in" on the sound. Just having clean audio isn't enough – we needed to create that perceptual experience of focusing on someone!
+            </p>
+            <p class="section-text" style="margin-bottom: 0;">
+              Think about it: when you zoom your camera from 1x to 5x, the visual experience changes dramatically. We wanted the audio to match that feeling.
+            </p>
+          </div>
+
+          <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">The Psychology Behind It</h4>
+          <p class="section-text">
+            Human hearing perception isn't linear – it's <strong>logarithmic</strong>! This is why we use decibels (dB) for sound measurement. When you double the actual sound intensity, it doesn't sound twice as loud to our ears. We had to build this psychoacoustic principle right into our zoom system.
+          </p>
+
+          <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">How We Did It: The Zoom Factor Formula</h4>
+          <p class="section-text">
+            Our solution blends the model's enhanced output with the original raw audio based on the zoom level. This creates a <strong>seamless audio zoom effect</strong> that doesn't burden the neural network with learning everything from scratch. Instead, the model focuses on noise/reverb removal while we handle the zoom sensation mathematically!
+          </p>
+
+          <div class="math-box">
+            <div class="math-label">Perceptually-Weighted Audio Zoom Formula</div>
+            <div style="background: white; padding: 12px; border-radius: 4px; margin: 8px 0; text-align: center; font-size: 1.1em;">
+              S<sub>out</sub> = (z<sup>2k</sup>) · a + (1 - z<sup>2k</sup>) · n
+            </div>
+            <div style="margin-top: 12px; padding: 10px; background: #fff; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.9em;">
+              <strong>Where:</strong><br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">S<sub>out</sub></code> = final output audio signal<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">z</code> = normalized zoom ratio (0 to 1, where 1 = maximum zoom)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">k</code> = psychoacoustic scaling constant (captures logarithmic perception)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">a</code> = enhanced audio from neural network (target focused)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">n</code> = raw mixed audio (natural ambient sound)
+            </div>
+          </div>
+
+          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <strong>💡 Why z<sup>2k</sup>?</strong> The exponent creates a <strong>non-linear transition curve</strong>. At low zoom levels (z ≈ 0.2), you get mostly ambient sound with subtle enhancement. As zoom increases, the enhanced audio becomes dominant, but gradually – not abruptly. The factor k accounts for how humans perceive sound intensity logarithmically, making the transition feel natural!
+          </div>
+
+          <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">Breaking Down the Math</h4>
+          <p class="section-text">
+            Let's say you're at <strong>3x optical zoom</strong>, which gives us z = 0.6 (normalized). With k = 0.5 for psychoacoustic scaling:
+          </p>
+          <ul style="margin-left: 20px; color: #475569;">
+            <li>Enhanced audio weight: (0.6)<sup>2×0.5</sup> = (0.6)<sup>1.0</sup> = 0.6 = <strong>60%</strong></li>
+            <li>Raw audio weight: 1 - 0.6 = <strong>40%</strong></li>
+          </ul>
+          <p class="section-text">
+            So at 3x zoom, you get 60% focused enhancement and 40% natural ambient sound. This preserves spatial awareness while emphasizing your target!
+          </p>
+
+          <div class="figure-box">
+            <img src="audio_transformation_plot.png" alt="Audio Transformation Pipeline Visualization">
+            <div class="figure-caption">
+              <strong>Figure 4: Audio Zoom Transformation Pipeline.</strong> Visualization of the complete audio processing chain: (Top) Clean synthetic target speech signal in blue showing the desired audio source; (Second) Pink noise representing interference and ambient sound; (Third) Dynamic zoom curve showing how the zoom ratio z varies over time, creating the non-linear weighting between enhanced and raw audio; (Bottom) Final zoomed output in purple, demonstrating the perceptually-weighted blend where increased zoom dynamically emphasizes the enhanced target signal while gradually suppressing ambient noise, creating a natural audio focus effect that matches the visual zoom experience.
+            </div>
+          </div>
+        </div>
         <div class="section-card">
           <h3 class="section-title">Reference Papers</h3>
           <p class="section-text">
