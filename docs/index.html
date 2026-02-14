@@ -815,7 +815,7 @@
 </div>
 
   <p class="section-text">
-    Here, <strong>f</strong> and <strong>ν</strong> denote frequency bin and time frame indices, respectively. Both real and imaginary components are explicitly preserved and stacked as separate channels to retain phase information critical for spatial modeling and dereverberation.
+    Here, <strong>f</strong> and <strong>ν</strong> denote frequency bin and time frame indices, respectively. Both real and imaginary components are explicitly preserved and stacked as separate channels to retain phase information critical for spatial modeling and de-reverberation.
   </p>
 
   <!-- 2.2 -->
@@ -864,7 +864,7 @@
   </p>
   <ul>
     <li>Self-Attention (parallel processing comparison of time frames)</li>
-    <li>Convolution (lto ensure continuity)</li>
+    <li>Convolution (to ensure continuity)</li>
   </ul>
 
   <p class="section-text">
@@ -970,7 +970,7 @@
               Neural Enhancement Network
             </div>
             <div class="diagram-block processing">
-              Dereverberation & Noise Suppression
+              De-reverberation & Noise Suppression
             </div>
             <div class="diagram-block output">
               Enhanced Target Speech Output
@@ -1083,7 +1083,7 @@
 
           <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">The Psychology Behind It</h4>
           <p class="section-text">
-            Human hearing perception isn't linear – it's <strong>logarithmic</strong>! This is why we use decibels (dB) for sound measurement. When you double the actual sound intensity, it doesn't sound twice as loud to our ears. We had to build this psychoacoustic principle right into our zoom system.
+            Human hearing perception isn't linear – it's <strong>logarithmic</strong>! This is why we use decibels (dB) for sound measurement. When you double the actual sound intensity, it doesn't sound twice as loud to our ears. We had to build this psycho-acoustic principle right into our zoom system.
           </p>
 
           <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">How We Did It: The Zoom Factor Formula</h4>
@@ -1100,7 +1100,7 @@
               <strong>Where:</strong><br>
               • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">S<sub>out</sub></code> = final output audio signal<br>
               • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">z</code> = normalized zoom ratio (0 to 1, where 1 = maximum zoom)<br>
-              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">k</code> = psychoacoustic scaling constant (captures logarithmic perception)<br>
+              • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">k</code> = psycho-acoustic scaling constant (captures logarithmic perception)<br>
               • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">a</code> = enhanced audio from neural network (target focused)<br>
               • <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px; color: #d63384; font-weight: bold;">n</code> = raw mixed audio (natural ambient sound)
             </div>
@@ -1112,7 +1112,7 @@
 
           <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">Breaking Down the Math</h4>
           <p class="section-text">
-            Let's say you're at <strong>3x optical zoom</strong>, which gives us z = 0.6 (normalized). With k = 0.5 for psychoacoustic scaling:
+            Let's say you're at <strong>3x optical zoom</strong>, which gives us z = 0.6 (normalized). With k = 0.5 for psycho-acoustic scaling:
           </p>
           <ul style="margin-left: 20px; color: #475569;">
             <li>Enhanced audio weight: (0.6)<sup>2×0.5</sup> = (0.6)<sup>1.0</sup> = 0.6 = <strong>60%</strong></li>
@@ -1133,15 +1133,15 @@
             By separating concerns, we get the best of both worlds:
           </p>
           <ul style="margin-left: 20px; color: #475569;">
-            <li><strong>Neural network task:</strong> Focus solely on speech enhancement, dereverberation, and noise removal</li>
+            <li><strong>Neural network task:</strong> Focus solely on speech enhancement, de-reverberation, and noise removal</li>
             <li><strong>Zoom factor task:</strong> Handle the perceptual zoom effect through robust mathematical blending</li>
           </ul>
           <p class="section-text">
-            This division means the model doesn't need to learn how to create different "zoom levels" – it just needs to extract clean speech. The zoom sensation is added in post-processing with our psychoacoustically-informed formula!
+            This division means the model doesn't need to learn how to create different "zoom levels" – it just needs to extract clean speech. The zoom sensation is added in post-processing with our psycho-acoustically-informed formula!
           </p>
 
           <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 20px 0; border-radius: 4px;">
-            <strong>🎯 Real-World Impact:</strong> In our user testing, this approach created a <strong>seamless audio-visual synchronization</strong>. Users reported that the audio zoom "just felt right" – it matched their visual expectations without sounding artificial or abrupt. The key was respecting human psychoacoustics instead of forcing the neural network to learn perceptual scaling from data alone.
+            <strong>🎯 Real-World Impact:</strong> In our user testing, this approach created a <strong>seamless audio-visual synchronization</strong>. Users reported that the audio zoom "just felt right" – it matched their visual expectations without sounding artificial or abrupt. The key was respecting human psycho-acoustics instead of forcing the neural network to learn perceptual scaling from data alone.
           </div>
 
           <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">Dynamic Zoom Handling</h4>
@@ -1185,7 +1185,7 @@
           <h4 style="color: #1e40af; margin-top: 28px; margin-bottom: 14px;">Real-World Conditions: True Generalization</h4>
           
           <p class="section-text">
-            The reverberant environment with <strong>RT60 of 0.5 seconds</strong> represents realistic smartphone usage. Here, our model achieves <strong>STOI of 0.963</strong>—maintaining <strong>98.7% of its anechoic performance</strong>. This minimal degradation is our most significant achievement: it proves true generalization rather than overfitting. Against our second best model (CRN at STOI 0.951), a <strong>1.3% improvement</strong> translates to meaningfully better real-world intelligibility. The SNR of 11.18 dB tops all evaluated methods.
+            The reverberant environment with <strong>RT60 of 0.5 seconds</strong> represents realistic smartphone usage. Here, our model achieves <strong>STOI of 0.963</strong>—maintaining <strong>98.7% of its anechoic performance</strong>. This minimal degradation is our most significant achievement: it proves true generalization rather than over-fitting. Against our second best model (CRN at STOI 0.951), a <strong>1.3% improvement</strong> translates to meaningfully better real-world intelligibility. The SNR of 11.18 dB tops all evaluated methods.
           </p>
 
           <div class="highlight-box">
@@ -1229,7 +1229,7 @@
               <strong>Nair et al. - "Audiovisual zooming: What you see is what you hear":</strong>
             </p>
             <ul style="margin: 0; padding-left: 20px;">
-              <li><strong>FOV-based approach:</strong> Formulates the problem as field-of-view enhancement but acknowledges reverberation as a significant limitation with no explicit dereverberation mechanism.</li>
+              <li><strong>FOV-based approach:</strong> Formulates the problem as field-of-view enhancement but acknowledges reverberation as a significant limitation with no explicit de-reverberation mechanism.</li>
               <li><strong>Model-based only:</strong> Uses purely analytical methods (generalized eigenvalue beamforming) and explicitly avoids machine learning. The SP Cup encourages learning-based and hybrid approaches.</li>
             </ul>
           </div>
@@ -1253,7 +1253,7 @@
           <select id="method">
             <option value="conformer">DCCRNN Conformer</option>
             <option value="neural_reverb">Neural Beamformer - Reverb</option>
-            <option value="two_channel_audiozooming">Two Channel AudioZooming</option>
+            <option value="two_channel_audiozooming">Two Channel Audio-Zooming</option>
             <option value="neural_transformer_anechoic">Neural Transformer - Anechoic</option>
             <option value="sepformer_enh">Sepformer - Enh</option>
             <option value="sepformer_enh_enh">Sepformer - Enh+Enh</option>
@@ -1334,7 +1334,7 @@
           <div class="video-grid" style="display:flex; gap:12px; margin-top:12px;">
             <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
               <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src="target_angle.mp4"></video>
-              <div class="figure-caption" style="margin-top:8px;"><strong>Vid. 1.</strong> This demo video showcases the target angle Calculation proof-of-concept considering Video Centreline as 0&deg;</div>
+              <div class="figure-caption" style="margin-top:8px;"><strong>Vid. 1.</strong> This demo video showcases the target angle Calculation proof-of-concept considering Video Centre-Line as 0&deg;</div>
             </div>
             <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
               <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src="zoom_target.mp4"></video>
@@ -1418,7 +1418,7 @@
     const methodDescriptions = {
       conformer: "Conformer architecture combines self-attention with convolution for robust speech enhancement. It models long-range temporal dependencies while preserving local structure, achieving high performance in reverberant conditions with moderate computational cost.",
       neural_reverb: "Neural Beamformer with reverb handling uses deep learning to focus on target audio sources while managing room acoustics. This approach combines traditional beamforming with neural networks for improved speech extraction.",
-      two_channel_audiozooming: "This uses tiny time/phase differences between mics to spatially focus on the target speaker, giving much better speech isolation and noise supression than any single-mic setup.",
+      two_channel_audiozooming: "This uses tiny time/phase differences between mics to spatially focus on the target speaker, giving much better speech isolation and noise suppression than any single-mic setup.",
       neural_transformer_anechoic: "Neural Transformer in anechoic conditions leverages self-attention mechanisms for audio separation. Trained on clean recordings, it excels at isolating individual sources with high fidelity.",
       sepformer_enh: "Sepformer with enhancement combines transformer-based separation with signal processing techniques. This method balances computational efficiency with separation quality for robust audio extraction.",
       sepformer_enh_enh: "Stacking the enhancement module twice cleans leftover artifacts and makes the human voice clearer and more crisp, increasing PESQ and STOI scores.",
