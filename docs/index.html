@@ -1123,7 +1123,7 @@
           </p>
 
           <div class="figure-box">
-            <img src="audio_transformation_plot.png" alt="Audio Transformation Pipeline Visualization">
+            <img src="audio_transformation_plot.jpeg" alt="Audio Transformation Pipeline Visualization">
             <div class="figure-caption">
               <strong>Figure 4: Audio Zoom Transformation Pipeline.</strong> Visualization of the complete audio processing chain: (Top) Clean synthetic target speech signal in blue showing the desired audio source; (Second) Pink noise representing interference and ambient sound; (Third) Dynamic zoom curve showing how the zoom ratio z varies over time, creating the non-linear weighting between enhanced and raw audio; (Bottom) Final zoomed output in purple, demonstrating the perceptually-weighted blend where increased zoom dynamically emphasizes the enhanced target signal while gradually suppressing ambient noise, creating a natural audio focus effect that matches the visual zoom experience.
             </div>
@@ -1163,7 +1163,7 @@
           </p>
 
           <div class="figure-box">
-            <img src="anechoic_results.svg" alt="Anechoic Conditions Performance Progression">
+            <img src="anechoic_plots.svg" alt="Anechoic Conditions Performance Progression">
             <div class="figure-caption">
               <strong>Figure 4: Anechoic Performance Evolution.</strong> Progressive improvement from baseline methods to our final DCCRNN-Conformer (gold star). Achieved: <strong>STOI 0.976</strong> (near-perfect intelligibility), <strong>PESQ 2.801</strong> (highest perceptual quality), <strong>SNR 16.19 dB</strong> (exceptional signal separation). All metrics shown at actual scales—the consistent upward trajectory validates our systematic design approach.
             </div>
@@ -1176,7 +1176,7 @@
           </p>
 
           <div class="figure-box">
-            <img src="reverberant_results.svg" alt="Reverberant Conditions Performance Progression">
+            <img src="reverberant_plots.svg" alt="Reverberant Conditions Performance Progression">
             <div class="figure-caption">
               <strong>Figure 5: Reverberant Performance Evolution.</strong> Evaluation across nine methods under realistic room conditions <strong>(RT60 = 0.5s)</strong>. Our DCCRNN-Conformer (gold star, rightmost) achieves <strong>STOI 0.963, PESQ 2.226, SNR 11.18 dB</strong>—maintaining near-anechoic performance despite challenging acoustics. Note the strategic labeling of key competitors: weakest baseline (NeuralT, left), competitive methods (Dfsnet, Dsenet enh, middle), and our own model being the strongest competitor (CRN, second from right). Our model decisively outperforms all.
             </div>
