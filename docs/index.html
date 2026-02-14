@@ -11,6 +11,12 @@
   /* Make media responsive and avoid overflowing their containers */
   img, iframe, video { max-width: 100%; height: auto; display: block; }
 
+  /* dynamic scroll offset to keep section titles visible under fixed navbar */
+  :root { --nav-height: 64px; }
+  .demo-section, .section-card, .header-section, .architecture-section, .figure-box {
+    scroll-margin-top: calc(var(--nav-height) + 12px);
+  }
+
   /* Fixed navbar: keep navigation visible at top */
   nav {
     position: fixed;
@@ -991,7 +997,7 @@
 
         </div>
 
-        <div class="section-card" id="target-angle">
+        <div class="section-card" id="target-angle-intro">
           <h3 class="section-title">App Integration I. "Target Angle Calculation from Video Feed"</h3>
           
           <div class="highlight-box">
@@ -1042,7 +1048,7 @@
           </div>
 
           <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
-            <strong>💡 The Cool Part:</strong> This formulation ensures <strong>angular invariance</strong>. That means a person standing at, say, 30° to the left will always give us θ = 30°, no matter how much we've zoomed in. The pixel position changes, but the math adapts!
+            <strong>The Cool Part:</strong> This formulation ensures <strong>angular invariance</strong>. That means a person standing at, say, 30° to the left will always give us θ = 30°, no matter how much we've zoomed in. The pixel position changes, but the math adapts!
           </div>
 
           <div class="figure-box">
@@ -1058,12 +1064,12 @@
           </p>
 
           <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
-            <strong>🔧 Implementation Note:</strong> We had to synchronize the asynchronous zoom logs with the video frames, which was a bit tricky. Make sure your timestamps are aligned or you'll get jittery angle estimates!
+            <strong>Implementation Note:</strong> We had to synchronize the asynchronous zoom logs with the video frames, which was a bit tricky. Make sure your timestamps are aligned or you'll get jittery angle estimates!
           </div>
           
         </div>
 
-        <div class="section-card" id="zoom-factor">
+        <div class="section-card" id="zoom-factor-intro">
           <h3 class="section-title">App Integration II. "Zoom Factor Integration"</h3>
           
           <div class="highlight-box">
@@ -1101,7 +1107,7 @@
           </div>
 
           <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
-            <strong>💡 Why z<sup>2k</sup>?</strong> The exponent creates a <strong>non-linear transition curve</strong>. At low zoom levels (z ≈ 0.2), you get mostly ambient sound with subtle enhancement. As zoom increases, the enhanced audio becomes dominant, but gradually – not abruptly. The factor k accounts for how humans perceive sound intensity logarithmically, making the transition feel natural!
+            <strong>Why z<sup>2k</sup>?</strong> The exponent creates a <strong>non-linear transition curve</strong>. At low zoom levels (z ≈ 0.2), you get mostly ambient sound with subtle enhancement. As zoom increases, the enhanced audio becomes dominant, but gradually – not abruptly. The factor k accounts for how humans perceive sound intensity logarithmically, making the transition feel natural!
           </div>
 
           <h4 style="color: #1e40af; margin-top: 24px; margin-bottom: 12px;">Breaking Down the Math</h4>
@@ -1255,11 +1261,11 @@
           <div class="video-grid" style="display:flex; gap:12px; margin-top:12px;">
             <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
               <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src="target_angle.mp4"></video>
-              <div class="figure-caption" style="margin-top:8px;">This demo video showcases the target angle Calculation proof-of-concept considering Video Centreline as 0&deg;</div>
+              <div class="figure-caption" style="margin-top:8px;"><strong>Vid. 1.</strong> This demo video showcases the target angle Calculation proof-of-concept considering Video Centreline as 0&deg;</div>
             </div>
             <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
               <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src="zoom_target.mp4"></video>
-              <div class="figure-caption" style="margin-top:8px;"><strong>Vid. 1.</strong> This demo video showcases the target angle estimation process is independent of speaker distance and video feed zoom factor.</div>
+              <div class="figure-caption" style="margin-top:8px;"><strong>Vid. 2.</strong> This demo video showcases the target angle estimation process is independent of speaker distance and video feed zoom factor.</div>
             </div>
           </div>
         </div>
@@ -1411,13 +1417,38 @@
 
         // when navigating to Methods, default scroll to audio demos
         if (targetPage === 'methods') {
-          setTimeout(() => {
-            const audioDemo = document.getElementById('audio-demos');
-            if (audioDemo) audioDemo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 60);
+          requestAnimationFrame(() => requestAnimationFrame(() => scrollToElementById('audio-demos')));
         }
+        // when navigating to Introduction, scroll to top
+        if (targetPage === 'intro') {
+          requestAnimationFrame(() => requestAnimationFrame(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }));
+        }
+        // close any open dropdown menus when navigating
+        document.querySelectorAll('.nav-item.open').forEach(it => it.classList.remove('open'));
       });
     });
+
+    // Scroll helper using CSS `scroll-margin-top` set from JS to account for fixed navbar
+    function scrollToElementById(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      // prefer native scrollIntoView; sections have scroll-margin-top set
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Keep CSS var `--nav-height` in sync with actual nav height
+    (function() {
+      const root = document.documentElement;
+      const navEl = document.querySelector('nav');
+      if (!navEl) return;
+      function updateNavHeight() {
+        const h = navEl.offsetHeight || 64;
+        root.style.setProperty('--nav-height', h + 'px');
+      }
+      updateNavHeight();
+      // update on resize / orientation change
+      window.addEventListener('resize', () => requestAnimationFrame(updateNavHeight));
+    })();
 
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
@@ -1429,26 +1460,74 @@
 
     // Demo dropdown items: show methods page and scroll to specific section
     const demoItems = document.querySelectorAll('.demo-item');
+    function activateDemoSection(it) {
+      const sectionId = it.dataset.section;
+      console.log('[demo] activateDemoSection ->', sectionId);
+      // activate Methods page
+      navLinks.forEach(l => l.classList.remove('active'));
+      const methodsNav = document.querySelector('.nav-link[data-page="methods"]');
+      if (methodsNav) methodsNav.classList.add('active');
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById('methods').classList.add('active');
+      // close dropdown if open
+      const navItem = it.closest('.nav-item');
+      if (navItem) navItem.classList.remove('open');
+      // wait for page to be active and layout to settle, then scroll
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const targetEl = document.getElementById(sectionId);
+        if (targetEl) {
+          try {
+            scrollToElementById(sectionId);
+          } catch (err) {
+            console.warn('[demo] scrollToElementById failed for', sectionId, err);
+          }
+
+          // fallback: if section still above navbar, compute manual offset scroll
+          setTimeout(() => {
+            const rect = targetEl.getBoundingClientRect();
+            const navH = document.querySelector('nav')?.offsetHeight || 64;
+            if (rect.top < navH + 4) {
+              const top = targetEl.getBoundingClientRect().top + window.pageYOffset - navH - 8;
+              window.scrollTo({ top, behavior: 'smooth' });
+              console.log('[demo] fallback scroll to', sectionId, top);
+            }
+          }, 120);
+        } else {
+          console.warn('[demo] target element not found:', sectionId);
+        }
+      }));
+    }
+
     demoItems.forEach(it => {
+      // pointerdown handles cases where click is intercepted by other handlers
+      it.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        activateDemoSection(it);
+      });
       it.addEventListener('click', (e) => {
         e.preventDefault();
-        const sectionId = it.dataset.section;
-        // activate Methods page
-        navLinks.forEach(l => l.classList.remove('active'));
-        const methodsNav = document.querySelector('.nav-link[data-page="methods"]');
-        if (methodsNav) methodsNav.classList.add('active');
-        pages.forEach(p => p.classList.remove('active'));
-        document.getElementById('methods').classList.add('active');
-        // close dropdown if open
-        const navItem = it.closest('.nav-item');
-        if (navItem) navItem.classList.remove('open');
-        // small delay to ensure page is visible then scroll
-        setTimeout(() => {
-          const targetEl = document.getElementById(sectionId);
-          if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 80);
+        e.stopPropagation();
+        activateDemoSection(it);
       });
     });
+
+    // Make the injected brand clickable: navigate to Introduction/top
+    (function() {
+      const navBrand = document.getElementById('navBrandText');
+      if (!navBrand) return;
+      navBrand.addEventListener('click', () => {
+        // activate intro page
+        navLinks.forEach(l => l.classList.remove('active'));
+        const introNav = document.querySelector('.nav-link[data-page="intro"]');
+        if (introNav) introNav.classList.add('active');
+        pages.forEach(p => p.classList.remove('active'));
+        const introPage = document.getElementById('intro');
+        if (introPage) introPage.classList.add('active');
+        // scroll to top
+        setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 40);
+      });
+    })();
 
     function populateMixedForMethod(method) {
       mixedSelect.innerHTML = '';
