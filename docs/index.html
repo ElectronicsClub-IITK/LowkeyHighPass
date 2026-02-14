@@ -1254,7 +1254,7 @@
           <p class="section-text">This demo shows how the system estimates target speaker angle from a camera feed. Use the two sample videos below to compare detection results.</p>
           <div class="video-grid" style="display:flex; gap:12px; margin-top:12px;">
             <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
-              <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src=""></video>
+              <video controls style="width:100%; height:auto; display:block; background:#000;" poster="" src="target_angle.mp4"></video>
               <div class="figure-caption" style="margin-top:8px;">This demo video showcases the target angle Calculation proof-of-concept considering Video Centreline as 0&deg;</div>
             </div>
             <div class="video-box" style="flex:1; background:#fff; border-radius:8px; padding:8px; border:1px solid #e2e8f0;">
@@ -1309,7 +1309,7 @@
     const defaultMixedList = ['male_female', 'male_song', 'male_noise1', 'male_noise2'];
 
     const methodMetricsData = {
-      conformer: { stoi: 0.85, pesq: 2.8, snr: 12.5 },
+      conformer: { stoi: 0.976, pesq: 2.8, snr: 16.19 },
       neural_reverb: { stoi: 0.72, pesq: 1.05, snr: 3.70 },
       two_channel_audiozooming: { stoi: 0.61, pesq: 1.64, snr: -4.99 },
       neural_transformer_anechoic: { stoi: 0.853, pesq: 1.759, snr: 12.46 },
