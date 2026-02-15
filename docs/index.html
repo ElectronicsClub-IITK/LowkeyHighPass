@@ -928,7 +928,7 @@
   />
 
   <div class="figure-caption">
-    <strong>Fig. 1.</strong>
+    <strong>Figure 1.</strong>
     <strong>Architecture of the Proposed Dual-Channel Convolutional Recurrent Neural Network (DCCRNN).</strong> The model features parallel convolutional pathways for spatial and temporal feature extraction, followed by bidirectional recurrent layers (GRU/LSTM) for sequential dependency modeling. Features from both channels are concatenated and processed through fully connected layers with dropout regularization before final classification via softmax activation.
   </div>
 </div>
@@ -938,11 +938,11 @@
       <h3 class="architecture-title">System Architecture & Processing Pipeline</h3>
       <div class="figure-box" style="margin-bottom: 30px;">
         <img
-          src="https://raw.githubusercontent.com/ElectronicsClub-IITK/LowkeyHighPass/main/docs/SP_Model.jpeg"
+          src="dccrnn_arch.svg"
           alt="System architecture diagram"
         />
         <div class="figure-caption">
-          <strong>Fig. 2.</strong>
+          <strong>Figure 2.</strong>
           <strong>End-to-End Audio Enhancement System Architecture.</strong> The model processes stereo audio through STFT-based feature extraction, a four-layer CNN encoder (4→256 channels), a spatial-temporal bottleneck with self-attention and angle conditioning, a U-Net decoder with skip connections, and complex mask-based reconstruction to produce enhanced audio output.
         </div>
       </div>
@@ -1165,7 +1165,7 @@
           <div class="figure-box">
             <img src="anechoic_plots.svg" alt="Anechoic Conditions Performance Progression">
             <div class="figure-caption">
-              <strong>Figure 4: Anechoic Performance Evolution.</strong> Progressive improvement from baseline methods to our final DCCRNN-Conformer (gold star). Achieved: <strong>STOI 0.976</strong> (near-perfect intelligibility), <strong>PESQ 2.801</strong> (highest perceptual quality), <strong>SNR 16.19 dB</strong> (exceptional signal separation). All metrics shown at actual scales—the consistent upward trajectory validates our systematic design approach.
+              <strong>Figure 5: Anechoic Performance Evolution.</strong> Progressive improvement from baseline methods to our final DCCRNN-Conformer (gold star). Achieved: <strong>STOI 0.976</strong> (near-perfect intelligibility), <strong>PESQ 2.801</strong> (highest perceptual quality), <strong>SNR 16.19 dB</strong> (exceptional signal separation). All metrics shown at actual scales—the consistent upward trajectory validates our systematic design approach.
             </div>
           </div>
 
@@ -1178,7 +1178,7 @@
           <div class="figure-box">
             <img src="reverberant_plots.svg" alt="Reverberant Conditions Performance Progression">
             <div class="figure-caption">
-              <strong>Figure 5: Reverberant Performance Evolution.</strong> Evaluation across nine methods under realistic room conditions <strong>(RT60 = 0.5s)</strong>. Our DCCRNN-Conformer (gold star, rightmost) achieves <strong>STOI 0.963, PESQ 2.226, SNR 11.18 dB</strong>—maintaining near-anechoic performance despite challenging acoustics. Note the strategic labeling of key competitors: weakest baseline (NeuralT, left), competitive methods (Dfsnet, Dsenet enh, middle), and our own model being the strongest competitor (CRN, second from right). Our model decisively outperforms all.
+              <strong>Figure 6: Reverberant Performance Evolution.</strong> Evaluation across nine methods under realistic room conditions <strong>(RT60 = 0.5s)</strong>. Our DCCRNN-Conformer (gold star, rightmost) achieves <strong>STOI 0.963, PESQ 2.226, SNR 11.18 dB</strong>—maintaining near-anechoic performance despite challenging acoustics. Note the strategic labeling of key competitors: weakest baseline (NeuralT, left), competitive methods (Dfsnet, Dsenet enh, middle), and our own model being the strongest competitor (CRN, second from right). Our model decisively outperforms all.
             </div>
           </div>
 
