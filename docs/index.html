@@ -86,6 +86,16 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
+  /* Prevent SVGs from being auto-inverted or recolored by dark-mode/blend rules.
+     - External SVGs loaded via <img> will keep their original colors.
+     - Use the `no-invert` class on images or inline <svg> to explicitly opt-out. */
+  img[src$=".svg"] {
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    background: transparent !important;
+  }
+  img.no-invert, svg.no-invert { filter: none !important; mix-blend-mode: normal !important; }
+
 /* Caption styling */
 .figure-caption {
   margin-top: 18px;
