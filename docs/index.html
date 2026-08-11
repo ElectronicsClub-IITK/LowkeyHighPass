@@ -1386,10 +1386,11 @@
   </div>
 
   <script>
-    const baseURL = "https://raw.githubusercontent.com/ElectronicsClub-IITK/LowkeyHighPass/main/";
+    // Use the verified Netlify demo deployment as the canonical audio source.
+    const baseURL = "https://interactive-audio-demo.netlify.app/";
 
     const methodMixedMap = {
-      conformer: ['interference'],
+      conformer: ['anechoic_mixture1', 'anechoic_mixture2', 'anechoic_mixture3', 'reverb_mixture1', 'reverb_mixture2', 'reverb_mixture3'],
       neural_transformer_anechoic: ['interference1', 'interference2', 'interference3', 'interference4'],
       dsenet_final: ['interference1', 'interference2', 'interference3', 'interference4'],
       dfsnet: ['male_female', 'dfs_test1'],
@@ -1421,7 +1422,7 @@
       dsenet: { cpuRam: 'N/A', gpuVram: '224.19 MB', macsPerSec: '3.63M', complexity: 'O (L^2*d)' },
       dsenet_final: { cpuRam: '1.6 GB', gpuVram: '0.0 GB', macsPerSec: '0.873M', complexity: 'O (L^2*d)' },
       dfsnet: { cpuRam: '1.5 GB', gpuVram: '0.0 GB', macsPerSec: '9500M', complexity: 'O (L^2*d)' },
-      hybeam: { cpuRam: '13.53 MB', gpuVram: '991.23 GB', macsPerSec: '11.2M', complexity: '0.0' },
+      hybeam: { cpuRam: '13.53 MB', gpuVram: 'N/A', macsPerSec: '11.2M', complexity: '0.0' },
       student_teacher: { cpuRam: '927.4 MB', gpuVram: '524 MB', macsPerSec: '87354 M', complexity: 'N A' }
     };
 
